@@ -2,7 +2,7 @@
 GET http://localhost:5069/todos
 
 ### GET TODO
-GET http://localhost:5069/todos/4
+GET http://localhost:5069/todos/2
 
 ### POST TODO
 POST http://localhost:5069/todos
