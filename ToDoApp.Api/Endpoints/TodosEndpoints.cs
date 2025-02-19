@@ -1,3 +1,4 @@
+using FluentValidation;
 using ToDoApp.DTOs.todos;
 
 namespace ToDoApp.Endpoints;
@@ -18,9 +19,9 @@ public static class TodosEndpoints
         var group = app.MapGroup("todos");
 
 
-        List<TodoDto> GetTodos()
+        IResult GetTodos()
         {
-            return todos;
+            return Results.Ok(todos);
         }
 
         IResult GetTodo(int id)
@@ -29,8 +30,13 @@ public static class TodosEndpoints
             return todo is null ? Results.NotFound() : Results.Ok(todo);
         }
 
-        IResult CreateTodo(CreateTodoDto newTodo)
+        async Task<IResult> CreateTodo(CreateTodoDto newTodo, IValidator<CreateTodoDto> validator)
         {
+            var result = await validator.ValidateAsync(newTodo);
+            if (!result.IsValid)
+            {
+                return Results.ValidationProblem(result.ToDictionary());
+            }
             TodoDto todo = new TodoDto(todos.Count + 1, newTodo.Title, newTodo.Description, newTodo.DueDate, false,
                 DateTime.UtcNow);
             todos.Add(todo);
@@ -38,11 +44,16 @@ public static class TodosEndpoints
             return Results.CreatedAtRoute(GetTodoEndpointName, new { id = todo.Id }, todo);
         }
 
-        IResult UpdateTodo(int id, UpdateTodoDto updateTodo)
+        async Task<IResult> UpdateTodo(int id, UpdateTodoDto updateTodo, IValidator<UpdateTodoDto> validator)
         {
             int index = todos.FindIndex(todo => todo.Id == id);
             if (index > -1)
             {
+                var result = await validator.ValidateAsync(updateTodo);
+                if (!result.IsValid)
+                {
+                    return Results.ValidationProblem(result.ToDictionary());
+                }
                 todos[index] = new TodoDto(id, updateTodo.Title,
                     updateTodo.Description, updateTodo.DueDate,
                     updateTodo.IsCompleted, todos[index].CreatedAt);
