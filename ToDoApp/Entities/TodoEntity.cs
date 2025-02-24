@@ -1,6 +1,6 @@
 namespace ToDoApp.Entities;
 
-public class Todo
+public class TodoEntity
 {
     public int Id { get; set; }
     public required string Title { get; set; }
@@ -8,4 +8,9 @@ public class Todo
     public DateTime? DueDate { get; set; }
     public bool IsCompleted { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    public TodoEntity()
+    {
+        CreatedAt = DateTime.UtcNow;
+    }
 }
