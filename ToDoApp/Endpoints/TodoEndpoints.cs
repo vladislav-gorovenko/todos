@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using ToDoApp.DTOs.todos;
 using ToDoApp.Entities;
 
@@ -15,15 +16,18 @@ public static class TodoEndpoints
         var group = app.MapGroup("todos");
 
 
-        async Task<IResult> GetTodos(TodoStoreContext dbContext, IMapper mapper)
+        async Task<IResult> GetTodos(TodoStoreContext dbContext, IMapper mapper,  [FromServices] ILogger<TodoEntity> logger)
         {
+            logger.LogInformation("Getting todos");
             List<TodoEntity> todoEntities = await dbContext.Todos.AsNoTracking().ToListAsync();
             List<TodoDto> todoDtos = mapper.Map<List<TodoDto>>(todoEntities);
+            logger.LogInformation("Got {Count} todos", todoDtos.Count);
             return Results.Ok(todoDtos);
         }
 
-        async Task<IResult> GetTodo(int id, TodoStoreContext dbContext, IMapper mapper)
+        async Task<IResult> GetTodo(int id, TodoStoreContext dbContext, IMapper mapper, [FromServices] ILogger<TodoEntity> logger)
         {
+            logger.LogInformation("Getting todo item");
             TodoEntity? todo = await dbContext.Todos.FirstOrDefaultAsync(todo => todo.Id == id);
             return todo is null ? Results.NotFound() : Results.Ok(mapper.Map<TodoDto>(todo));
         }

@@ -6,7 +6,7 @@ using ToDoApp.Validators.todos;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register validation services
+// Register Validation Services
 builder.Services.AddTransient<IValidator<CreateTodoDto>, CreateTodoDtoValidator>();
 builder.Services.AddTransient<IValidator<UpdateTodoDto>, UpdateTodoDtoValidator>();
 
