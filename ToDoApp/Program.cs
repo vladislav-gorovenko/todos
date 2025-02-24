@@ -11,7 +11,8 @@ builder.Services.AddTransient<IValidator<CreateTodoDto>, CreateTodoDtoValidator>
 builder.Services.AddTransient<IValidator<UpdateTodoDto>, UpdateTodoDtoValidator>();
 
 // Register SQLite DbContext
-builder.Services.AddSqlite<TodoStoreContext>("Data Source=Data/TodoStore.db");
+var connectionString = builder.Configuration.GetConnectionString("TodoStore");
+builder.Services.AddSqlite<TodoStoreContext>(connectionString);
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
