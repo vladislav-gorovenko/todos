@@ -70,9 +70,9 @@ public static class TodoEndpoints
             
             return Results.NoContent();
         }
-        
-        group.MapGet("/", GetTodos);
-        group.MapGet("/{id}", GetTodo).WithName(GetTodoEndpointName);
+
+        group.MapGet("/", GetTodos).Produces<List<TodoDto>>(StatusCodes.Status200OK);
+        group.MapGet("/{id}", GetTodo).WithName(GetTodoEndpointName).Produces<TodoDto>(StatusCodes.Status200OK);
         group.MapPost("/", CreateTodo);
         group.MapPut("/{id}", UpdateTodo);
         group.MapDelete("/{id}", DeleteTodo);

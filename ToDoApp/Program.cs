@@ -5,18 +5,25 @@ using ToDoApp.Endpoints;
 using ToDoApp.Validators.todos;
 
 var builder = WebApplication.CreateBuilder(args);
-// registering services 
 
-// registering validation services 
+// Register validation services
 builder.Services.AddTransient<IValidator<CreateTodoDto>, CreateTodoDtoValidator>();
 builder.Services.AddTransient<IValidator<UpdateTodoDto>, UpdateTodoDtoValidator>();
 
-// registering service that works with sqlite db and specifying its location
+// Register SQLite DbContext
 builder.Services.AddSqlite<TodoStoreContext>("Data Source=Data/TodoStore.db");
 
+// Register AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// Register Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(); 
+
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 app.MapTodosEndpoints();
 
 app.Run();
